@@ -18,7 +18,7 @@ const Home = ({ navigation }) => {
       </Header>
 
       <ButtonGroup>
-        <DefaultButton onPress={() => navigation.navigate("Login")}>
+        <DefaultButton onPress={() => navigation.navigate("Sign up")}>
           Sign Up
         </DefaultButton>
 
