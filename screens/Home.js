@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../assets/colors/colors";
 import styled from "styled-components/native";
@@ -12,13 +13,20 @@ import DefaultButton from "../components/button";
 const Home = ({ navigation }) => {
   return (
     <ScreenContainer>
+      <TouchableOpacity
+        style={{ position: "absolute", top: 75, right: 50, padding: 5 }}
+        onPress={() => navigation.navigate("Admin")}
+      >
+        <MaterialCommunityIcons name="account-key" size={36} />
+      </TouchableOpacity>
+
       <Header>
         <Title>Emergency App</Title>
         <MaterialCommunityIcons name="ambulance" size={128} />
       </Header>
 
       <ButtonGroup>
-        <DefaultButton onPress={() => navigation.navigate("Sign up")}>
+        <DefaultButton onPress={() => navigation.navigate("Sign Up")}>
           Sign Up
         </DefaultButton>
 

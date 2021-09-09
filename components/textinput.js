@@ -11,14 +11,17 @@ const DefaultTextInput = ({
   placeholder,
   keyboardType,
   secureTextEntry,
+  maxLength,
+  spellCheck,
 }) => {
   return (
     <DefaultTextInputContainer
-      onChangeText={saveState}
       value={fieldType}
       placeholder={placeholder}
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
+      maxLength={maxLength}
+      spellCheck={spellCheck}
     />
   );
 };

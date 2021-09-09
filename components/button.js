@@ -13,7 +13,7 @@ const DefaultButton = ({ children, onPress }) => {
 };
 
 const DefaultButtonContainer = styled.TouchableOpacity`
-  padding: 14px 0;
+  padding: 15px 15px;
   background-color: ${colors.primary};
   border-radius: 50px;
 `;

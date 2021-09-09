@@ -1,32 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  View,
   Text,
+  View,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import DefaultTextInput from "../components/textinput";
-import DefaultButton from "../components/button";
+import DefaultTextInput from "../../components/textinput";
+import DefaultButton from "../../components/button";
+import LoginIllustration from "../../assets/images/LoginIllustration.png";
 
-const SignUp = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const [username, onChangeUsername] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
-  const [contact, onChangeContact] = React.useState("");
-  const [photo, onChangePhoto] = React.useState("");
 
   return (
-    <SignUpContainer>
-      <Heading>Sign Up to the Emergency App</Heading>
-      <MaterialCommunityIcons name="ambulance" size={64} />
-      <SignUpForm>
+    <LoginContainer>
+      <Heading>Login to the Emergency App</Heading>
+      <LoginIllustrationContainer source={LoginIllustration} />
+
+      <LoginForm>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
@@ -36,15 +36,6 @@ const SignUp = ({ navigation }) => {
                 onChangeText={onChangeUsername}
                 value={username}
                 placeholder="Username"
-                maxLength={16}
-                spellCheck={false}
-              />
-
-              <DefaultTextInput
-                onChangeText={onChangeEmail}
-                value={email}
-                placeholder="Email"
-                keyboardType="email-address"
               />
 
               <DefaultTextInput
@@ -54,30 +45,22 @@ const SignUp = ({ navigation }) => {
                 secureTextEntry={true}
               />
 
-              <DefaultTextInput
-                onChangeText={onChangeContact}
-                value={contact}
-                placeholder="Contact"
-                keyboardType="numeric"
-                maxLength={10}
-              />
-
               <DefaultButton
                 onPress={() => {
-                  navigation.navigate("Image Picker Screen");
+                  navigation.navigate("Admin Dashboard");
                 }}
               >
-                Sign Up
+                Login
               </DefaultButton>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-      </SignUpForm>
-    </SignUpContainer>
+      </LoginForm>
+    </LoginContainer>
   );
 };
 
-const SignUpContainer = styled.View`
+const LoginContainer = styled.View`
   flex: 1;
   align-items: center;
   padding: 50px 15px;
@@ -85,12 +68,15 @@ const SignUpContainer = styled.View`
 
 const Heading = styled.Text`
   font-size: 24px;
-  text-align: center;
 `;
 
-const SignUpForm = styled.View`
+const LoginIllustrationContainer = styled.Image`
+  margin: 25px 0;
+`;
+
+const LoginForm = styled.View`
   padding: 50px 0;
   width: 100%;
 `;
 
-export default SignUp;
+export default Login;

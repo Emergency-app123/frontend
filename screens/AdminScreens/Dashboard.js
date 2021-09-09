@@ -3,27 +3,27 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import colors from "../assets/colors/colors";
-import DefaultButton from "../components/button";
+import colors from "../../assets/colors/colors";
+import DefaultButton from "../../components/button";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Card from "../components/card";
+import Card from "../../components/card";
 
-const Dashboard = ({ navigation }) => {
+const AdminDashboard = ({ navigation }) => {
   return (
     <DashboardContainer>
       <Appbar>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Drawer");
+            navigation.navigate("Admin Drawer");
           }}
         >
           <MaterialCommunityIcons name="menu" size={48} color={colors.black} />
         </TouchableOpacity>
       </Appbar>
       <Header>
-        <Title>Welcome</Title>
+        <Title>Welcome Admin</Title>
         <MaterialCommunityIcons
           name="ambulance"
           size={96}
@@ -32,48 +32,22 @@ const Dashboard = ({ navigation }) => {
       </Header>
       <CardContainer>
         <Card
-          title="Report Incident"
-          subtitle="Use camera to report incident."
-          icon="camera"
+          title="User Details"
+          subtitle="Check details of all users"
+          icon="account"
           onPress={() => {
-            navigation.navigate("Camera Application");
+            navigation.navigate("User Details");
           }}
         />
 
         <Card
-          title="Upload Location"
-          subtitle="Upload location to report incident."
-          icon="near-me"
+          title="Notifications"
+          subtitle="Check user notifications"
+          icon="bell"
           onPress={() => {
-            navigation.navigate("User Location");
+            navigation.navigate("Notifications");
           }}
         />
-
-        <Card
-          title="Health Details"
-          subtitle="Upload Health Details."
-          icon="heart"
-          onPress={() => {
-            navigation.navigate("Health Details");
-          }}
-        />
-
-        <Card
-          title="Emergency Details"
-          subtitle="Provide Details of Emergency."
-          icon="ambulance"
-          onPress={() => {
-            navigation.navigate("Emergency Details");
-          }}
-        />
-
-        <DefaultButton
-          onPress={() => {
-            navigation.navigate("Incident Reported");
-          }}
-        >
-          Submit
-        </DefaultButton>
       </CardContainer>
     </DashboardContainer>
   );
@@ -102,8 +76,8 @@ const Title = styled.Text`
 `;
 
 const CardContainer = styled.View`
-  height: 65%;
+  height: 50%;
   justify-content: space-evenly;
 `;
 
-export default Dashboard;
+export default AdminDashboard;

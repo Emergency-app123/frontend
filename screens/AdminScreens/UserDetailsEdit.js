@@ -1,30 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import styled from "styled-components/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styled from "styled-components";
+import colors from "../../assets/colors/colors";
+import DefaultTextInput from "../../components/textinput";
+import DefaultButton from "../../components/button";
 
-import DefaultTextInput from "../components/textinput";
-import DefaultButton from "../components/button";
-
-const SignUp = ({ navigation }) => {
+const UserDetailsEdit = ({ navigation }) => {
   const [username, onChangeUsername] = React.useState("");
   const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
   const [contact, onChangeContact] = React.useState("");
-  const [photo, onChangePhoto] = React.useState("");
 
   return (
-    <SignUpContainer>
-      <Heading>Sign Up to the Emergency App</Heading>
+    <Container>
+      <Appbar>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Admin Drawer");
+          }}
+        >
+          <MaterialCommunityIcons name="menu" size={48} color={colors.black} />
+        </TouchableOpacity>
+      </Appbar>
+
+      <Heading>Edit User Details</Heading>
       <MaterialCommunityIcons name="ambulance" size={64} />
       <SignUpForm>
         <KeyboardAvoidingView
@@ -48,13 +57,6 @@ const SignUp = ({ navigation }) => {
               />
 
               <DefaultTextInput
-                onChangeText={onChangePassword}
-                value={password}
-                placeholder="Password"
-                secureTextEntry={true}
-              />
-
-              <DefaultTextInput
                 onChangeText={onChangeContact}
                 value={contact}
                 placeholder="Contact"
@@ -64,27 +66,34 @@ const SignUp = ({ navigation }) => {
 
               <DefaultButton
                 onPress={() => {
-                  navigation.navigate("Image Picker Screen");
+                  navigation.navigate("User Detail Successful");
                 }}
               >
-                Sign Up
+                Update
               </DefaultButton>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SignUpForm>
-    </SignUpContainer>
+    </Container>
   );
 };
 
-const SignUpContainer = styled.View`
+const Container = styled.View`
   flex: 1;
   align-items: center;
   padding: 50px 15px;
 `;
 
+const Appbar = styled.View`
+  padding: 25px 0;
+  width: 100%;
+`;
+
 const Heading = styled.Text`
-  font-size: 24px;
+  margin-bottom: 25px;
+  font-size: 36px;
+  font-weight: bold;
   text-align: center;
 `;
 
@@ -93,4 +102,4 @@ const SignUpForm = styled.View`
   width: 100%;
 `;
 
-export default SignUp;
+export default UserDetailsEdit;
