@@ -10,9 +10,40 @@ import Home from "./screens/Home";
 import SignUp from "./screens/SignUp";
 import Login from "./screens/Login";
 import EmergencyContact from "./screens/EmergencyContact";
+import ImagePickerScreen from "./screens/ImagePickerScreen";
 import SignUpSuccessful from "./screens/SignUpSuccessful";
+
 import Dashboard from "./screens/Dashboard";
 import CameraApplication from "./screens/Camera";
+import UserLocation from "./screens/UserLocation";
+import HealthDetails from "./screens/HealthDetails";
+import HealthDetailsSuccessful from "./screens/HealthDetailsSuccessful";
+import HealthDetailsFailed from "./screens/HealthDetailsFailed";
+import EmergencyDetails from "./screens/EmergencyDetails";
+import EmergencyDetailsFailed from "./screens/EmergencyDetailsFailed";
+import EmergencyDetailsSuccessful from "./screens/EmergencyDetailsSuccessful";
+import IncidentReported from "./screens/IncidentReported";
+
+import Drawer from "./screens/Drawer";
+import Settings from "./screens/Drawer/Settings";
+import ChangeUsername from "./screens/Drawer/Settings/ChangeUsername";
+import ChangeUsernameSuccessful from "./screens/Drawer/Settings/ChangeUsernameSuccessful";
+import ChangePassword from "./screens/Drawer/Settings/ChangePassword";
+import ChangePasswordSuccessful from "./screens/Drawer/Settings/ChangePasswordSuccessful";
+import ChangeContact from "./screens/Drawer/Settings/ChangeContact";
+import ChangeContactSuccessful from "./screens/Drawer/Settings/ChangeContactSuccessful";
+
+import Admin from "./screens/AdminScreens";
+import AdminLogin from "./screens/AdminScreens/Login";
+import AdminDashboard from "./screens/AdminScreens/Dashboard";
+import AdminUserDetails from "./screens/AdminScreens/UserDetails";
+import AdminUserDetailsEdit from "./screens/AdminScreens/UserDetailsEdit";
+import UserDetailSuccessful from "./screens/AdminScreens/UserDetailSuccessful";
+import Notifications from "./screens/AdminScreens/Notifications";
+import AdminDrawer from "./screens/AdminScreens/Drawer";
+import AdminSettings from "./screens/AdminScreens/Drawer/AdminSettings";
+import AdminChangePassword from "./screens/AdminScreens/Drawer/ChangePassword";
+import ChangeAdminPasswordSuccessful from "./screens/AdminScreens/Drawer/ChangePasswordSuccessful";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +62,56 @@ export default App = () => {
         }}
       >
         <Stack.Screen
+          name="Admin"
+          component={Admin}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen name="Admin Login" component={AdminLogin} />
+
+        <Stack.Screen
+          name="Admin Dashboard"
+          component={AdminDashboard}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Admin Drawer"
+          component={AdminDrawer}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen name="Admin Settings" component={AdminSettings} />
+
+        <Stack.Screen name="User Details" component={AdminUserDetails} />
+
+        <Stack.Screen
+          name="Change Admin Password"
+          component={AdminChangePassword}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Admin Password Successful"
+          component={ChangeAdminPasswordSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="User Edit"
+          component={AdminUserDetailsEdit}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="User Detail Successful"
+          component={UserDetailSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen name="Notifications" component={Notifications} />
+
+        <Stack.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
@@ -46,14 +127,120 @@ export default App = () => {
 
         <Stack.Screen name="Emergency Contacts" component={EmergencyContact} />
 
+        <Stack.Screen
+          name="Image Picker Screen"
+          component={ImagePickerScreen}
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen name="Sign Up Successful" component={SignUpSuccessful} />
 
-        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Drawer"
+          component={Drawer}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Username"
+          component={ChangeUsername}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Password"
+          component={ChangePassword}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Contact"
+          component={ChangeContact}
+          options={{ headerShown: false }}
+        />
 
         <Stack.Screen
           name="Camera Application"
           component={CameraApplication}
-          options={{ title: "Camera" }}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="User Location"
+          component={UserLocation}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Health Details"
+          component={HealthDetails}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Health Details Added Successful"
+          component={HealthDetailsSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Health Details Failed"
+          component={HealthDetailsFailed}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Emergency Details"
+          component={EmergencyDetails}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Emergency Details Failed"
+          component={EmergencyDetailsFailed}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Emergency Details Added Successful"
+          component={EmergencyDetailsSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Incident Reported"
+          component={IncidentReported}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Username Successful"
+          component={ChangeUsernameSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Password Successful"
+          component={ChangePasswordSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Change Contact Successful"
+          component={ChangeContactSuccessful}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
       <StatusBar style="dark" />
