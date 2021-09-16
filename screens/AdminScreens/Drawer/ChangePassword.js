@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  Text,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
@@ -13,6 +22,50 @@ const ChangeAdminPassword = ({ navigation }) => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [error, setError] = useState({
+    oldPasswordError: "",
+    newPasswordError: "",
+    confirmPasswordError: "",
+  });
+
+  const handleSubmit = () => {
+    if (!oldPassword) {
+      setError((prev) => {
+        return {
+          ...prev,
+          oldPasswordError: "Please enter a valid password",
+        };
+      });
+    }
+
+    if (!newPassword) {
+      setError((prev) => {
+        return {
+          ...prev,
+          newPasswordError: "Please enter a valid password",
+        };
+      });
+    }
+
+    if (!confirmPassword) {
+      setError((prev) => {
+        return {
+          ...prev,
+          confirmPasswordError: "Please enter a valid password",
+        };
+      });
+    }
+
+    if (
+      error.oldPasswordError == null &&
+      error.newPasswordError == null &&
+      error.confirmPasswordError == null
+    ) {
+      console.log(error);
+      navigation.navigate("Change Admin Password Successful");
+    }
+  };
 
   return (
     <Container>
@@ -31,43 +84,96 @@ const ChangeAdminPassword = ({ navigation }) => {
       </Appbar>
 
       <Form>
-        <DefaultTextInput
-          onChangeText={setOldPassword}
-          value={oldPassword}
-          placeholder="Old Password"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultTextInput
-          onChangeText={setNewPassword}
-          value={newPassword}
-          placeholder="New Password"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultTextInput
-          onChangeText={setConfirmPassword}
-          value={confirmPassword}
-          placeholder="Confirm Password"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultButton
-          onPress={() => {
-            navigation.navigate("Change Admin Password Successful");
-          }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          Submit
-        </DefaultButton>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <ErrorMessage>{error.oldPasswordError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setOldPassword(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, oldPasswordError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        oldPasswordError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={oldPassword}
+                placeholder="Old Password"
+                maxLength={32}
+                keyboardType="default"
+                secureTextEntry={true}
+              />
+
+              <ErrorMessage>{error.newPasswordError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setNewPassword(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, newPasswordError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        newPasswordError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={newPassword}
+                placeholder="New Password"
+                maxLength={32}
+                keyboardType="default"
+                secureTextEntry={true}
+              />
+
+              <ErrorMessage>{error.confirmPasswordError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setConfirmPassword(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, confirmPasswordError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        confirmPasswordError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                maxLength={32}
+                keyboardType="default"
+                secureTextEntry={true}
+              />
+
+              <DefaultButton onPress={handleSubmit}>Submit</DefaultButton>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Form>
     </Container>
   );
 };
 
-const Container = styled.View`
+const Container = styled.ScrollView`
   flex: 1;
   padding: 50px 15px 0 15px;
 `;
@@ -88,8 +194,17 @@ const Title = styled.Text`
 `;
 
 const Form = styled.View`
+  flex: 1;
   justify-content: center;
+  margin-top: 150px;
   height: 100%;
+`;
+
+const ErrorMessage = styled.Text`
+  margin-bottom: 5px;
+  margin-left: 25px;
+  color: red;
+  font-size: 14px;
 `;
 
 export default ChangeAdminPassword;

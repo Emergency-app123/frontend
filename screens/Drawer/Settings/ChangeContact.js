@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
@@ -12,6 +21,36 @@ import DefaultButton from "../../../components/button";
 const ChangeContact = ({ navigation }) => {
   const [oldContact, setOldContact] = useState();
   const [newContact, setNewContact] = useState();
+
+  const [error, setError] = useState({
+    oldContactError: "",
+    newContactError: "",
+  });
+
+  const handleSubmit = () => {
+    if (!oldContact || oldContact.length !== 10) {
+      setError((prev) => {
+        return {
+          ...prev,
+          oldContactError: "Please enter a valid contact",
+        };
+      });
+    }
+
+    if (!newContact) {
+      setError((prev) => {
+        return {
+          ...prev,
+          newContactError: "Please enter a valid contact",
+        };
+      });
+    }
+
+    if (error.oldContactError == null && error.newContactError == null) {
+      console.log("Error: " + error);
+      navigation.navigate("Change Contact Successful");
+    }
+  };
 
   return (
     <Container>
@@ -30,35 +69,78 @@ const ChangeContact = ({ navigation }) => {
       </Appbar>
 
       <Form>
-        <DefaultTextInput
-          onChangeText={setOldContact}
-          value={oldContact}
-          placeholder="Old Contact"
-          maxLength={10}
-          keyboardType="numeric"
-        />
-
-        <DefaultTextInput
-          onChangeText={setNewContact}
-          value={newContact}
-          placeholder="New Contact"
-          maxLength={10}
-          keyboardType="numeric"
-        />
-
-        <DefaultButton
-          onPress={() => {
-            navigation.navigate("Change Contact Successful");
-          }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          Submit
-        </DefaultButton>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <ErrorMessage>{error.oldContactError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setOldContact(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, oldContactError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        oldContactError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={oldContact}
+                placeholder="Old Contact"
+                maxLength={10}
+                keyboardType="numeric"
+              />
+
+              <ErrorMessage>{error.newContactError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setNewContact(text);
+
+                  if (text.length !== 10) {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        newContactError: "This field is required.",
+                      };
+                    });
+                  }
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, newContactError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        newContactError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={newContact}
+                placeholder="New Contact"
+                maxLength={10}
+                keyboardType="numeric"
+              />
+
+              <DefaultButton onPress={handleSubmit}>Submit</DefaultButton>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Form>
     </Container>
   );
 };
 
-const Container = styled.View`
+const Container = styled.ScrollView`
   flex: 1;
   padding: 50px 15px 0 15px;
 `;
@@ -79,8 +161,17 @@ const Title = styled.Text`
 `;
 
 const Form = styled.View`
+  margin-top: 125px;
+  flex: 1;
   justify-content: center;
   height: 100%;
+`;
+
+const ErrorMessage = styled.Text`
+  margin-bottom: 5px;
+  margin-left: 25px;
+  color: red;
+  font-size: 14px;
 `;
 
 export default ChangeContact;

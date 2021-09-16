@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  Text,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
@@ -10,9 +19,65 @@ import DefaultTextInput from "../../../components/textinput";
 import DefaultButton from "../../../components/button";
 
 const ChangeUsername = ({ navigation }) => {
-  const [oldUsername, setOldUsername] = useState("");
-  const [newUsername, setNewUsername] = useState("");
-  const [confirmUsername, setConfirmUsername] = useState("");
+  const [oldUsername, setOldUsername] = useState();
+  const [newUsername, setNewUsername] = useState();
+  const [confirmUsername, setConfirmUsername] = useState();
+
+  const [error, setError] = useState({
+    oldUsernameError: "",
+    newUsernameError: "",
+    confirmUsernameError: "",
+  });
+
+  const handleSubmit = () => {
+    if (!oldUsername || oldUsername.length < 3) {
+      setError((prev) => {
+        return {
+          ...prev,
+          oldUsernameError: "Please enter a valid username",
+        };
+      });
+    }
+
+    if (!newUsername || newUsername.length < 3) {
+      setError((prev) => {
+        return {
+          ...prev,
+          newUsernameError: "Please enter a valid username",
+        };
+      });
+    }
+
+    if (!confirmUsername || confirmUsername.length < 3) {
+      setError((prev) => {
+        return {
+          ...prev,
+          confirmUsernameError: "Please enter a valid username",
+        };
+      });
+    }
+
+    if (confirmUsername !== newUsername) {
+      setError((prev) => {
+        return {
+          ...prev,
+          confirmUsernameError:
+            "New Username and Confirm Username does not match",
+        };
+      });
+    }
+
+    console.log(error);
+
+    if (
+      error.oldUsernameError == null &&
+      error.newUsernameError == null &&
+      error.confirmUsernameError == null
+    ) {
+      console.log(error);
+      navigation.navigate("Change Username Successful");
+    }
+  };
 
   return (
     <Container>
@@ -31,37 +96,87 @@ const ChangeUsername = ({ navigation }) => {
       </Appbar>
 
       <Form>
-        <DefaultTextInput
-          onChangeText={setOldUsername}
-          value={oldUsername}
-          placeholder="Old Username"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultTextInput
-          onChangeText={setNewUsername}
-          value={newUsername}
-          placeholder="New Username"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultTextInput
-          onChangeText={setConfirmUsername}
-          value={confirmUsername}
-          placeholder="Confirm Username"
-          maxLength={32}
-          keyboardType="default"
-        />
-
-        <DefaultButton
-          onPress={() => {
-            navigation.navigate("Change Username Successful");
-          }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          Submit
-        </DefaultButton>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <ErrorMessage>{error.oldUsernameError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setOldUsername(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, oldUsernameError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        oldUsernameError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={oldUsername}
+                placeholder="Old Username"
+                maxLength={32}
+                keyboardType="default"
+              />
+
+              <ErrorMessage>{error.newUsernameError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setNewUsername(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, newUsernameError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        newUsernameError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={newUsername}
+                placeholder="New Username"
+                maxLength={32}
+                keyboardType="default"
+              />
+
+              <ErrorMessage>{error.confirmUsernameError}</ErrorMessage>
+              <DefaultTextInput
+                saveState={(text) => {
+                  setConfirmUsername(text);
+
+                  if (text !== "") {
+                    setError((prev) => {
+                      return { ...prev, confirmUsernameError: null };
+                    });
+                  } else {
+                    setError((prev) => {
+                      return {
+                        ...prev,
+                        confirmUsernameError: "This field is required.",
+                      };
+                    });
+                  }
+                }}
+                value={confirmUsername}
+                placeholder="Confirm Username"
+                maxLength={32}
+                keyboardType="default"
+              />
+
+              <DefaultButton onPress={handleSubmit}>Submit</DefaultButton>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Form>
     </Container>
   );
@@ -90,6 +205,13 @@ const Title = styled.Text`
 const Form = styled.View`
   justify-content: center;
   height: 100%;
+`;
+
+const ErrorMessage = styled.Text`
+  margin-bottom: 5px;
+  margin-left: 25px;
+  color: red;
+  font-size: 14px;
 `;
 
 export default ChangeUsername;

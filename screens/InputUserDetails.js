@@ -3,22 +3,20 @@ import {
 	ScrollView,
 	View,
 	Text,
-	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
 	TouchableWithoutFeedback,
 	Keyboard,
+	Image,
 } from "react-native";
 
-import styled from "styled-components";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styled from "styled-components/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import * as yup from "yup";
 
-import colors from "../../assets/colors/colors";
-import DefaultTextInput from "../../components/textinput";
-import DefaultButton from "../../components/button";
+import DefaultTextInput from "../components/textinput";
+import DefaultButton from "../components/button";
 
 const ValidationSchema = yup.object({
 	name: yup.string().required("Please enter your name"),
@@ -31,21 +29,14 @@ const ValidationSchema = yup.object({
 		}),
 });
 
-const UserDetailsEdit = ({ navigation }) => {
+const InputUserDetails = ({ route, navigation }) => {
+	const capturedImage = route.params.capturedImage.uri;
+	console.log(capturedImage);
+
 	return (
 		<Container>
-			<Appbar>
-				<TouchableOpacity
-					onPress={() => {
-						navigation.navigate("Admin Drawer");
-					}}>
-					<MaterialCommunityIcons name="menu" size={48} color={colors.black} />
-				</TouchableOpacity>
-			</Appbar>
-
 			<Header>
-				<Heading>Edit User Details</Heading>
-				<MaterialCommunityIcons name="ambulance" size={64} />
+				<Heading>User Details</Heading>
 			</Header>
 			<Form>
 				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -59,7 +50,7 @@ const UserDetailsEdit = ({ navigation }) => {
 							}}
 							onSubmit={(values) => {
 								console.log(values);
-								navigation.navigate("User Detail Successful");
+								navigation.navigate("Input User Detail Successful");
 							}}>
 							{({ handleChange, handleSubmit, values, touched, errors }) => (
 								<View>
@@ -108,11 +99,6 @@ const Container = styled.ScrollView`
 	padding: 50px 15px;
 `;
 
-const Appbar = styled.View`
-	padding: 25px 0;
-	width: 100%;
-`;
-
 const Header = styled.View`
 	align-items: center;
 	padding: 50px 0;
@@ -120,8 +106,13 @@ const Header = styled.View`
 
 const Heading = styled.Text`
 	margin-bottom: 25px;
-	font-size: 36px;
-	font-weight: bold;
+	font-size: 28px;
+	text-align: center;
+`;
+
+const SelectedImage = styled.Text`
+	margin: 25px;
+	font-size: 14px;
 	text-align: center;
 `;
 
@@ -137,4 +128,4 @@ const ErrorMessage = styled.Text`
 	font-size: 14px;
 `;
 
-export default UserDetailsEdit;
+export default InputUserDetails;

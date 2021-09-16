@@ -85,11 +85,15 @@ const DashboardContainer = styled.View`
 `;
 
 const Appbar = styled.View`
-  padding: 25px 0;
+  position: absolute;
+  top: 75px;
+  left: 25px;
+  /* padding: 25px 0; */
   height: 56px;
 `;
 
 const Header = styled.View`
+  margin-top: 50px;
   height: 25%;
   justify-content: center;
   align-items: center;
