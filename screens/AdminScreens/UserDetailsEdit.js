@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-	ScrollView,
-	View,
-	Text,
-	TouchableOpacity,
-	KeyboardAvoidingView,
-	Platform,
-	TouchableWithoutFeedback,
-	Keyboard,
+  Button,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  StyleSheet,
+  TextInput,
 } from "react-native";
-
+// import { TextInput } from "react-native-paper";
 import styled from "styled-components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -19,122 +22,204 @@ import * as yup from "yup";
 import colors from "../../assets/colors/colors";
 import DefaultTextInput from "../../components/textinput";
 import DefaultButton from "../../components/button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ValidationSchema = yup.object({
-	name: yup.string().required("Please enter your name"),
-	email: yup.string().required("Please enter your email").email("Please enter a valid email address"),
-	contact: yup
-		.string()
-		.required("Please enter your contact")
-		.test("isValidContact", "Please enter a valid contact", (value) => {
-			return parseInt(value) !== 10;
-		}),
+  name: yup.string().required("Please enter your name"),
+  email: yup
+    .string()
+    .required("Please enter your email")
+    .email("Please enter a valid email address"),
+  contact: yup
+    .string()
+    .required("Please enter your contact")
+    .test("isValidContact", "Please enter a valid contact", (value) => {
+      return parseInt(value) !== 10;
+    }),
 });
 
-const UserDetailsEdit = ({ navigation }) => {
-	return (
-		<Container>
-			<Appbar>
-				<TouchableOpacity
-					onPress={() => {
-						navigation.navigate("Admin Drawer");
-					}}>
-					<MaterialCommunityIcons name="menu" size={48} color={colors.black} />
-				</TouchableOpacity>
-			</Appbar>
+const UserDetailsEdit = ({ route, navigation }) => {
+  console.log(route);
+  const [newData, setNewData] = React.useState("");
+  useEffect(() => {
+    (async () => {
+      console.log("helllo");
+      const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+        return res;
+      });
+      console.log("Hiiii", route.params.userId);
 
-			<Header>
-				<Heading>Edit User Details</Heading>
-				<MaterialCommunityIcons name="ambulance" size={64} />
-			</Header>
-			<Form>
-				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-						<Formik
-							validationSchema={ValidationSchema}
-							initialValues={{
-								name: "",
-								contact: "",
-								email: "",
-							}}
-							onSubmit={(values) => {
-								console.log(values);
-								navigation.navigate("User Detail Successful");
-							}}>
-							{({ handleChange, handleSubmit, values, touched, errors }) => (
-								<View>
-									<ErrorMessage>{touched.name && errors.name}</ErrorMessage>
-									<DefaultTextInput
-										autoCapitalize="words"
-										saveState={handleChange("name")}
-										value={values.name}
-										placeholder="Name"
-										maxLength={32}
-									/>
+      fetch(
+        `http://192.168.1.124:3000/api/admin/getUser/${route.params.userId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + bearer,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setNewData(data.data[0]);
+        })
+        .catch((err) => console.log(err));
+    })();
+  }, []);
 
-									<ErrorMessage>{touched.contact && errors.contact}</ErrorMessage>
-									<DefaultTextInput
-										autoCapitalize="none"
-										saveState={handleChange("contact")}
-										value={values.contact}
-										placeholder="contact"
-										keyboardType="numeric"
-										maxLength={10}
-									/>
+  const getUpdateData = async (values) => {
+    const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+      return res;
+    });
+    console.log("Hiiii", route.params.userId);
+    const params = JSON.stringify(values);
+    console.log("params", params);
+    fetch(
+      `http://192.168.1.124:3000/api/admin/updateUser/${route.params.userId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + bearer,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.name,
+          contact: values.contact,
+          email: values.email,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success == 1) {
+          navigation.navigate("User Detail Successful");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
-									<ErrorMessage>{touched.email && errors.email}</ErrorMessage>
-									<DefaultTextInput
-										autoCapitalize="none"
-										saveState={handleChange("email")}
-										value={values.email}
-										placeholder="email"
-										keyboardType="email-address"
-										maxLength={32}
-									/>
+  //   console.log("newData", newData);
+  return (
+    <Container>
+      <Appbar>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Admin Drawer");
+          }}
+        >
+          <MaterialCommunityIcons name="menu" size={48} color={colors.black} />
+        </TouchableOpacity>
+      </Appbar>
 
-									<DefaultButton onPress={handleSubmit}>Submit</DefaultButton>
-								</View>
-							)}
-						</Formik>
-					</TouchableWithoutFeedback>
-				</KeyboardAvoidingView>
-			</Form>
-		</Container>
-	);
+      <Header>
+        <Heading>Edit User Details</Heading>
+        <MaterialCommunityIcons name="ambulance" size={64} />
+      </Header>
+      <Form>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <>
+              <Formik
+                initialValues={{
+                  name: newData.name,
+                  contact: newData.contact,
+                  email: newData.email,
+                }}
+                enableReinitialize={true}
+                onSubmit={(values) => getUpdateData(values)}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values }) => (
+                  <View>
+                    {/* <DefaultTextInput
+                      saveSate={handleChange("email")}
+                      value={values.email}
+                      placeholder="Enter Name"
+                    /> */}
+                    <TextInput
+                      placeholder="Enter Name"
+                      onChangeText={handleChange("name")}
+                      onBlur={handleBlur("name")}
+                      value={values.name}
+                      inputContainerStyle={{ borderBottomWidth: 0 }}
+                      style={styles.input}
+                    />
+                    <TextInput
+                      placeholder="Enter Email"
+                      onChangeText={handleChange("email")}
+                      onBlur={handleBlur("email")}
+                      value={values.email}
+                      inputContainerStyle={{ borderBottomWidth: 0 }}
+                      style={styles.input}
+                    />
+                    <TextInput
+                      placeholder="Enter contact"
+                      onChangeText={handleChange("contact")}
+                      onBlur={handleBlur("contact")}
+                      value={values.contact}
+                      inputContainerStyle={{ borderBottomWidth: 0 }}
+                      style={styles.input}
+                    />
+
+                    <DefaultButton onPress={handleSubmit}>Update</DefaultButton>
+                  </View>
+                )}
+              </Formik>
+            </>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Form>
+    </Container>
+  );
 };
 
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 3,
+    borderColor: "#5B3030",
+    height: 60,
+    margin: 10,
+    padding: 10,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+  },
+});
+
 const Container = styled.ScrollView`
-	flex: 1;
-	padding: 50px 15px;
+  flex: 1;
+  padding: 50px 15px;
 `;
 
 const Appbar = styled.View`
-	padding: 25px 0;
-	width: 100%;
+  padding: 25px 0;
+  width: 100%;
 `;
 
 const Header = styled.View`
-	align-items: center;
-	padding: 50px 0;
+  align-items: center;
+  padding: 50px 0;
 `;
 
 const Heading = styled.Text`
-	margin-bottom: 25px;
-	font-size: 36px;
-	font-weight: bold;
-	text-align: center;
+  margin-bottom: 25px;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
 `;
 
 const Form = styled.View`
-	padding: 50px 0;
-	width: 100%;
+  padding: 50px 0;
+  width: 100%;
 `;
 
 const ErrorMessage = styled.Text`
-	margin-bottom: 5px;
-	margin-left: 25px;
-	color: red;
-	font-size: 14px;
+  margin-bottom: 5px;
+  margin-left: 25px;
+  color: red;
+  font-size: 14px;
 `;
 
 export default UserDetailsEdit;

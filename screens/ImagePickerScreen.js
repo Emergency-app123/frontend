@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import DefaultButton from "../components/button";
 
-const ImagePickerScreen = ({ navigation }) => {
+const ImagePickerScreen = ({ route, navigation }) => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -31,13 +31,47 @@ const ImagePickerScreen = ({ navigation }) => {
       quality: 1,
     });
 
-    console.log(result);
-
+    console.log("result", result);
+    console.log("params", route.params);
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
-
+  const getAuthToken = () => {
+    const form = new FormData();
+    console.log("route", route.params);
+    var type = image.substr(image.lastIndexOf(".") + 1);
+    var string = "";
+    if (type == "jpg") {
+      string = `image/${type}`;
+    } else {
+      string = `image/png`;
+    }
+    form.append("photo", {
+      name: image.substr(image.lastIndexOf("/") + 1),
+      type: string,
+      uri: Platform.OS === "ios" ? image.replace("file://", "") : image,
+    });
+    form.append("username", route.params.username);
+    form.append("email", route.params.email);
+    form.append("password", route.params.password);
+    form.append("contact", route.params.contact);
+    fetch("http://192.168.1.124:3000/api/user/", {
+      method: "POST",
+      body: form,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success == "1") {
+          navigation.navigate("Sign Up Successful");
+        } else {
+          navigation.navigate("Sign Up");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <Container>
       <Title>Almost there...</Title>
@@ -55,7 +89,8 @@ const ImagePickerScreen = ({ navigation }) => {
           <View style={{ marginTop: 50 }}>
             <DefaultButton
               onPress={() => {
-                navigation.navigate("Sign Up Successful");
+                getAuthToken();
+                // navigation.navigate("Sign Up Successful");
               }}
             >
               Next

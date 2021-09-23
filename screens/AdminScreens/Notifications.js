@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserNotification = ({ userProfilePicture, User, NotificationMsg }) => {
   return (
@@ -27,12 +28,38 @@ const UserNotification = ({ userProfilePicture, User, NotificationMsg }) => {
 };
 
 const Notifications = ({ navigation }) => {
+  const [newLogData, setNewLogData] = useState("");
+  useEffect(() => {
+    (async () => {
+      console.log("hi");
+      const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+        return res;
+      });
+      fetch("http://192.168.1.124:3000/api/admin/show-notifications", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + bearer,
+          "Content-Type": "application/json",
+        },
+      }).then((res) => {
+        res.json().then((data) => {
+          setNewLogData(data.data);
+        });
+      });
+    })();
+  }, []);
   return (
     <Container>
-      <UserNotification User="Someone" NotificationMsg="Incident Reported!" />
-      <UserNotification User="Someone" NotificationMsg="Incident Reported!" />
-      <UserNotification User="Someone" NotificationMsg="Incident Reported!" />
-      <UserNotification User="Someone" NotificationMsg="Incident Reported!" />
+      {Object.values(newLogData).map((res) => {
+        {
+          return (
+            <UserNotification
+              User={res.name}
+              NotificationMsg="Incident Reported!"
+            />
+          );
+        }
+      })}
     </Container>
   );
 };

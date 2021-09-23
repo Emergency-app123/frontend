@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -6,8 +6,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import styled from "styled-components/native";
 import colors from "../../assets/colors/colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { json } from "stream/consumers";
 
 const UserDetails = ({ navigation }) => {
+  const [setData, useNewData] = useState("");
+
   const tempUserData = [
     {
       key: 0,
@@ -24,8 +28,33 @@ const UserDetails = ({ navigation }) => {
       password: "password",
     },
   ];
+  useEffect(() => {
+    (async () => {
+      // console.log(hi);
+      const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+        return res;
+      });
+      console.log("Hiiii");
 
-  const UserDetailsRow = ({ username, email, contact, password }) => {
+      fetch("http://192.168.1.124:3000/api/admin/getUsers", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + bearer,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ selectUser: 1 }),
+        //
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.data);
+          useNewData(data.data);
+        })
+        .catch((err) => console.log(err));
+    })();
+  }, []);
+
+  const UserDetailsRow = ({ username, email, contact, password, id }) => {
     return (
       <DataTable.Row>
         <DataTable.Cell>{username}</DataTable.Cell>
@@ -35,7 +64,7 @@ const UserDetails = ({ navigation }) => {
         <DataTable.Cell>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("User Edit");
+              navigation.navigate("User Edit", { userId: id });
             }}
           >
             <MaterialCommunityIcons
@@ -56,19 +85,20 @@ const UserDetails = ({ navigation }) => {
           <DataTable.Title>Username</DataTable.Title>
           <DataTable.Title>Email</DataTable.Title>
           <DataTable.Title>Contact</DataTable.Title>
-          <DataTable.Title>Password</DataTable.Title>
           <DataTable.Title>Edit</DataTable.Title>
         </DataTable.Header>
 
-        {tempUserData.map((user) => (
-          <UserDetailsRow
-            key={user.key}
-            username={user.username}
-            email={user.email}
-            contact={user.contact}
-            password={user.password}
-          />
-        ))}
+        {setData
+          ? setData.map((user) => (
+              <UserDetailsRow
+                key={user.id}
+                username={user.name}
+                email={user.email}
+                contact={user.contact}
+                id={user.id}
+              />
+            ))
+          : null}
       </DataTable>
     </Container>
   );

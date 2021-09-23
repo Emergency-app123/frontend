@@ -7,8 +7,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import colors from "../../assets/colors/colors";
 import Card from "../../components/card";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Drawer = ({ navigation }) => {
+  const signOut = async () => {
+    await AsyncStorage.removeItem("id_token").then((res) => {
+      console.log(res);
+      if (res == null) {
+        navigation.navigate("Home");
+      } else {
+        navigation.navigate("Dashboard");
+      }
+    });
+  };
   return (
     <Container>
       <Appbar>
@@ -41,7 +52,8 @@ const Drawer = ({ navigation }) => {
         <Card
           title="Log Out"
           onPress={() => {
-            navigation.navigate("Home");
+            signOut();
+            // navigation.navigate("Home");
           }}
           icon="power"
         />

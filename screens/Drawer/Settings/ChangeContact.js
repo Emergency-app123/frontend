@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -17,7 +18,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import colors from "../../../assets/colors/colors";
 import DefaultTextInput from "../../../components/textinput";
 import DefaultButton from "../../../components/button";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const ChangeContact = ({ navigation }) => {
   const [oldContact, setOldContact] = useState();
   const [newContact, setNewContact] = useState();
@@ -48,6 +49,40 @@ const ChangeContact = ({ navigation }) => {
 
     if (error.oldContactError == null && error.newContactError == null) {
       console.log("Error: " + error);
+      (async () => {
+        // console.log(hi);
+        const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+          return res;
+        });
+        console.log("Hiiii");
+        const params = JSON.stringify({
+          contact: newContact,
+        });
+
+        fetch("http://192.168.1.124:3000/api/user/ChangeUserContact", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + bearer,
+            "Content-Type": "application/json",
+          },
+          body: params,
+          //
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data.data);
+            if (data.success == 1) {
+              Alert.alert(data.message);
+              navigation.navigate("Change Username Successful");
+            } else {
+              Alert.alert(data.message);
+              navigation.navigate("Dashboard");
+            }
+            // useNewData(data.data);
+          })
+          .catch((err) => console.log(err));
+      })();
+
       navigation.navigate("Change Contact Successful");
     }
   };

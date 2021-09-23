@@ -1,16 +1,94 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../assets/colors/colors";
 import DefaultButton from "../components/button";
-
+import * as Notifications from "expo-notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Card from "../components/card";
-
+import Constants from "expo-constants";
+import registerDevicePushTokenAsync from "./notification";
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 const Dashboard = ({ navigation }) => {
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  useEffect(() => {
+    (async () => {
+      const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+        return res;
+      });
+      console.log("bearer", bearer);
+      fetch("http://192.168.1.124:3000/api/user/send-notifications", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + bearer,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+        //
+      });
+    })();
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    // setReportIncident();
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+  // Notifications.getExpoPushTokenAsync();
+  const setReportIncident = async () => {
+    const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+      return res;
+    });
+    const parmas = JSON.stringify({
+      status: 1,
+    });
+    console.log("hi");
+    fetch("http://192.168.1.124:3000/api/user/setStatusReport", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + bearer,
+        "Content-Type": "application/json",
+      },
+      body: parmas,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success == 1) {
+          navigation.navigate("Incident Reported");
+        } else {
+          navigation.navigate("Dashboard");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <DashboardContainer>
       <Appbar>
@@ -69,7 +147,8 @@ const Dashboard = ({ navigation }) => {
 
         <DefaultButton
           onPress={() => {
-            navigation.navigate("Incident Reported");
+            setReportIncident();
+            // navigation.navigate("Incident Reported");
           }}
         >
           Submit
@@ -90,6 +169,7 @@ const Appbar = styled.View`
   left: 25px;
   /* padding: 25px 0; */
   height: 56px;
+  z-index: 9999;
 `;
 
 const Header = styled.View`

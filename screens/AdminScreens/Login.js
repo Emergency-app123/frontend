@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import {
-	ScrollView,
-	Text,
-	View,
-	KeyboardAvoidingView,
-	Platform,
-	TouchableWithoutFeedback,
-	Keyboard,
-	Image,
+  ScrollView,
+  Text,
+  Alert,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Image,
 } from "react-native";
 
 import styled from "styled-components/native";
@@ -15,100 +16,157 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import * as yup from "yup";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import DefaultTextInput from "../../components/textinput";
 import DefaultButton from "../../components/button";
 import LoginIllustration from "../../assets/images/LoginIllustration.png";
 
 const ValidationSchema = yup.object({
-	username: yup.string().required("Please enter a username").min(3, "Username should be atleast 3 characters long"),
-	password: yup.string().required("Please enter a password").min(8, "Password should be atleast 8 characters long"),
+  username: yup
+    .string()
+    .required("Please enter a username")
+    .min(3, "Username should be atleast 3 characters long"),
+  password: yup
+    .string()
+    .required("Please enter a password")
+    .min(8, "Password should be atleast 8 characters long"),
 });
 
 const Login = ({ navigation }) => {
-	return (
-		<Container>
-			<Header>
-				<Heading>Login to the Emergency App</Heading>
-				<LoginIllustrationContainer source={LoginIllustration} />
-			</Header>
+  const getAuthToken = async (values) => {
+    console.log("API is runing");
+    let params = JSON.stringify({
+      email: values.username,
+      password: values.password,
+    });
+    const onValueChange = async (item, selectedValue) => {
+      try {
+        await AsyncStorage.setItem(item, selectedValue);
+      } catch (error) {
+        console.log("AsyncStorage error: " + error.message);
+      }
+    };
+    console.log("params", params);
+    fetch("http://192.168.1.124:3000/api/admin/admin-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: params,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success == true) {
+          console.log("userId", data);
+          onValueChange("id_token", data.token);
+          AsyncStorage.getItem("id_token").then((res) => {
+            if (res) {
+              console.log(res);
+              console.log(data);
+              // Alert.alert(data);
+              navigation.push("Admin Dashboard", data.userId);
+            } else {
+              navigation.navigate("Login");
+            }
+          });
+        } else {
+          Alert.alert(data.data);
+        }
+      })
+      .catch((err) => {
+        Alert.alert(err);
+      })
+      .done();
+  };
+  return (
+    <Container>
+      <Header>
+        <Heading>Login to the Emergency App</Heading>
+        <LoginIllustrationContainer source={LoginIllustration} />
+      </Header>
 
-			<LoginForm>
-				<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-						<Formik
-							validationSchema={ValidationSchema}
-							initialValues={{
-								username: "",
-								password: "",
-							}}
-							onSubmit={(values) => {
-								console.log(values);
-								navigation.navigate("Admin Dashboard");
-							}}>
-							{({ handleChange, handleSubmit, values, touched, errors }) => (
-								<View>
-									<ErrorMessage>{touched.username && errors.username}</ErrorMessage>
+      <LoginForm>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <Formik
+              validationSchema={ValidationSchema}
+              initialValues={{
+                username: "",
+                password: "",
+              }}
+              onSubmit={(values) => {
+                console.log(values);
+                getAuthToken(values);
+                // navigation.navigate("Admin Dashboard");
+              }}
+            >
+              {({ handleChange, handleSubmit, values, touched, errors }) => (
+                <View>
+                  <ErrorMessage>
+                    {touched.username && errors.username}
+                  </ErrorMessage>
 
-									<DefaultTextInput
-										autoCapitalize="none"
-										saveState={handleChange("username")}
-										value={values.username}
-										placeholder="Username"
-										keyboardType="default"
-										maxLength={32}
-									/>
+                  <DefaultTextInput
+                    autoCapitalize="none"
+                    saveState={handleChange("username")}
+                    value={values.username}
+                    placeholder="Username"
+                    keyboardType="default"
+                    maxLength={32}
+                  />
 
-									<ErrorMessage>{touched.password && errors.password}</ErrorMessage>
+                  <ErrorMessage>
+                    {touched.password && errors.password}
+                  </ErrorMessage>
 
-									<DefaultTextInput
-										autoCapitalize="none"
-										saveState={handleChange("password")}
-										value={values.password}
-										placeholder="Password"
-										maxLength={32}
-										secureTextEntry={true}
-									/>
+                  <DefaultTextInput
+                    autoCapitalize="none"
+                    saveState={handleChange("password")}
+                    value={values.password}
+                    placeholder="Password"
+                    maxLength={32}
+                    secureTextEntry={true}
+                  />
 
-									<DefaultButton onPress={handleSubmit}>Login</DefaultButton>
-								</View>
-							)}
-						</Formik>
-					</TouchableWithoutFeedback>
-				</KeyboardAvoidingView>
-			</LoginForm>
-		</Container>
-	);
+                  <DefaultButton onPress={handleSubmit}>Login</DefaultButton>
+                </View>
+              )}
+            </Formik>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </LoginForm>
+    </Container>
+  );
 };
 
 const Container = styled.ScrollView`
-	flex: 1;
-	padding: 50px 15px;
+  flex: 1;
+  padding: 50px 15px;
 `;
 
 const Header = styled.View`
-	align-items: center;
-	padding: 50px 0;
+  align-items: center;
+  padding: 50px 0;
 `;
 
 const Heading = styled.Text`
-	font-size: 24px;
+  font-size: 24px;
 `;
 
 const LoginIllustrationContainer = styled.Image`
-	margin: 25px 0;
+  margin: 25px 0;
 `;
 
 const LoginForm = styled.View`
-	padding: 50px 0;
-	width: 100%;
+  padding: 50px 0;
+  width: 100%;
 `;
 
 const ErrorMessage = styled.Text`
-	margin-bottom: 5px;
-	margin-left: 25px;
-	color: red;
-	font-size: 14px;
+  margin-bottom: 5px;
+  margin-left: 25px;
+  color: red;
+  font-size: 14px;
 `;
 
 export default Login;

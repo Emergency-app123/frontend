@@ -8,8 +8,17 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "plugins": [
+        [
+          "expo-notifications",
+          {
+            "sounds": ["./assets/notification_sound.wav"]
+          }
+        ]
+      ]
     },
+    
     "updates": {
       "fallbackToCacheTimeout": 0
     },

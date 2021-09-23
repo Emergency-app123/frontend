@@ -8,30 +8,36 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DefaultButton from "../components/button";
 
 const CameraSuccessful = ({ route, navigation }) => {
-	return (
-		<Container>
-			<Title>Your image was added successfully</Title>
-			<MaterialCommunityIcons name="check-circle" size={96} color="green" style={{ marginVertical: 50 }} />
-			<DefaultButton
-				onPress={() => {
-					navigation.navigate("Input User Details", route.params);
-				}}>
-				Enter User Details
-			</DefaultButton>
-		</Container>
-	);
+  return (
+    <Container>
+      <Title>Your image was added successfully</Title>
+      <MaterialCommunityIcons
+        name="check-circle"
+        size={96}
+        color="green"
+        style={{ marginVertical: 50 }}
+      />
+      <DefaultButton
+        onPress={() => {
+          navigation.navigate("Input User Details", route.params);
+        }}
+      >
+        Enter User Details
+      </DefaultButton>
+    </Container>
+  );
 };
 
 const Container = styled.View`
-	flex: 1;
-	justify-content: center;
-	align-items: center;
-	padding: 0 15px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px;
 `;
 
 const Title = styled.Text`
-	font-size: 32px;
-	text-align: center;
+  font-size: 32px;
+  text-align: center;
 `;
 
 export default CameraSuccessful;

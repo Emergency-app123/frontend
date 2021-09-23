@@ -47,9 +47,8 @@ const UserLocation = ({ navigation }) => {
         value={search}
         placeholder="Search..."
       />
-
       <MapView
-        initialRegion={region}
+        // initialRegion={region}
         showsUserLocation={true}
         followsUserLocation={true}
         showsMyLocationButton={true}

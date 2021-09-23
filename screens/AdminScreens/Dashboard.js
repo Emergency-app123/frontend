@@ -1,26 +1,25 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Pressable, Image } from "react-native";
 
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../../assets/colors/colors";
 import DefaultButton from "../../components/button";
-
+import { Ionicons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import Menu from "../../assets/images/menu.png";
 import Card from "../../components/card";
 
 const AdminDashboard = ({ navigation }) => {
   return (
     <DashboardContainer>
-      <Appbar>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Admin Drawer");
-          }}
-        >
-          <MaterialCommunityIcons name="menu" size={48} color={colors.black} />
-        </TouchableOpacity>
+      <Appbar
+        onPress={() => {
+          navigation.navigate("Admin Drawer");
+        }}
+      >
+        <Image source={Menu} style={{ width: 48, height: 48 }} />
+        {/* <Ionicons name="md-menu" size={48} color="black" /> */}
       </Appbar>
       <Header>
         <Title>Welcome Admin</Title>
@@ -58,7 +57,7 @@ const DashboardContainer = styled.View`
   padding: 25px 15px;
 `;
 
-const Appbar = styled.View`
+const Appbar = styled.Pressable`
   position: absolute;
   top: 50px;
   left: 25px;

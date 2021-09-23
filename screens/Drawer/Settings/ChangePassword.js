@@ -13,7 +13,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../../../assets/colors/colors";
 import DefaultTextInput from "../../../components/textinput";
 import DefaultButton from "../../../components/button";
@@ -63,7 +63,47 @@ const ChangePassword = ({ navigation }) => {
       error.confirmPasswordError == null
     ) {
       console.log(error);
-      navigation.navigate("Change Password Successful");
+
+      (async () => {
+        var data = {
+          oldPassword: oldPassword,
+          NewPassword: newPassword,
+          ConfirmPassword: confirmPassword,
+        };
+
+        const bearer = await AsyncStorage.getItem("id_token").then((res) => {
+          return res;
+        });
+        console.log(data);
+        fetch("http://192.168.1.124:3000/api/user/Change-password", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + bearer,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success == true) {
+              console.log(data);
+              AsyncStorage.getItem("id_token").then((res) => {
+                if (res) {
+                  navigation.navigate("Change Password Successful");
+                } else {
+                  navigation.navigate("Login");
+                }
+              });
+            } else {
+              console.log("errr", data);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        console.log("data", data);
+      })();
     }
   };
 
