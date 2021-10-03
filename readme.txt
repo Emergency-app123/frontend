@@ -9,9 +9,6 @@ Following Steps to be followed:
 GitHub Link 
 we have uploaded emergency mobile application on GitHub. The GitHub repository detail is as below:
 URL: https://github.com/Emergency-app123 
-Username: Shubham07731
-Password: @Neelam@123
-
 
 
 The bottom step should be followed once above steps is already have done.
