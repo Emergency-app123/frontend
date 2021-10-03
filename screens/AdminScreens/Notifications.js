@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseUrl from "../../assets/base_url";
 
 const UserNotification = ({ userProfilePicture, User, NotificationMsg }) => {
   return (
@@ -35,7 +36,7 @@ const Notifications = ({ navigation }) => {
       const bearer = await AsyncStorage.getItem("id_token").then((res) => {
         return res;
       });
-      fetch("http://192.168.1.124:3000/api/admin/show-notifications", {
+      fetch(`${baseUrl}/api/admin/show-notifications`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + bearer,
@@ -54,6 +55,7 @@ const Notifications = ({ navigation }) => {
         {
           return (
             <UserNotification
+              key="{res.name}"
               User={res.name}
               NotificationMsg="Incident Reported!"
             />

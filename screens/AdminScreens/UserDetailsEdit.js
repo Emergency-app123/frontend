@@ -23,6 +23,7 @@ import colors from "../../assets/colors/colors";
 import DefaultTextInput from "../../components/textinput";
 import DefaultButton from "../../components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseUrl from "../../assets/base_url";
 
 const ValidationSchema = yup.object({
   name: yup.string().required("Please enter your name"),
@@ -49,16 +50,13 @@ const UserDetailsEdit = ({ route, navigation }) => {
       });
       console.log("Hiiii", route.params.userId);
 
-      fetch(
-        `http://192.168.1.124:3000/api/admin/getUser/${route.params.userId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + bearer,
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      fetch(`${baseUrl}/api/admin/getUser/${route.params.userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + bearer,
+          "Content-Type": "application/json",
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           setNewData(data.data[0]);
@@ -74,21 +72,18 @@ const UserDetailsEdit = ({ route, navigation }) => {
     console.log("Hiiii", route.params.userId);
     const params = JSON.stringify(values);
     console.log("params", params);
-    fetch(
-      `http://192.168.1.124:3000/api/admin/updateUser/${route.params.userId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + bearer,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: values.name,
-          contact: values.contact,
-          email: values.email,
-        }),
-      }
-    )
+    fetch(`${baseUrl}/api/admin/updateUser/${route.params.userId}`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + bearer,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: values.name,
+        contact: values.contact,
+        email: values.email,
+      }),
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.success == 1) {

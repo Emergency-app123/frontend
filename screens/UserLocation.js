@@ -14,6 +14,7 @@ import colors from "../assets/colors/colors";
 const UserLocation = ({ navigation }) => {
   const [region, setRegion] = useState(null);
   const [search, setSearch] = useState();
+  const [error, setErrorMsg] = useState();
   const _map = useRef(null);
 
   useEffect(() => {
@@ -21,6 +22,8 @@ const UserLocation = ({ navigation }) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
+      } else {
+        return true;
       }
 
       let location = await Location.getLastKnownPositionAsync({

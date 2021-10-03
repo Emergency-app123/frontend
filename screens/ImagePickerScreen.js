@@ -7,7 +7,7 @@ import * as ImagePicker from "expo-image-picker";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import DefaultButton from "../components/button";
-
+import baseUrl from "../assets/base_url";
 const ImagePickerScreen = ({ route, navigation }) => {
   const [image, setImage] = useState(null);
 
@@ -56,7 +56,7 @@ const ImagePickerScreen = ({ route, navigation }) => {
     form.append("email", route.params.email);
     form.append("password", route.params.password);
     form.append("contact", route.params.contact);
-    fetch("http://192.168.1.124:3000/api/user/", {
+    fetch(`${baseUrl}/api/user/`, {
       method: "POST",
       body: form,
     })

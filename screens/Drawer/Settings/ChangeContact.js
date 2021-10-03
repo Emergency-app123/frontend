@@ -19,6 +19,7 @@ import colors from "../../../assets/colors/colors";
 import DefaultTextInput from "../../../components/textinput";
 import DefaultButton from "../../../components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseUrl from "../../../assets/base_url";
 const ChangeContact = ({ navigation }) => {
   const [oldContact, setOldContact] = useState();
   const [newContact, setNewContact] = useState();
@@ -59,7 +60,7 @@ const ChangeContact = ({ navigation }) => {
           contact: newContact,
         });
 
-        fetch("http://192.168.1.124:3000/api/user/ChangeUserContact", {
+        fetch(`${baseUrl}/api/user/ChangeUserContact`, {
           method: "POST",
           headers: {
             Authorization: "Bearer " + bearer,

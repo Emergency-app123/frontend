@@ -13,12 +13,13 @@
         [
           "expo-notifications",
           {
-            "sounds": ["./assets/notification_sound.wav"]
+            "sounds": [
+              "./assets/notification_sound.wav"
+            ]
           }
         ]
       ]
     },
-    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -26,7 +27,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "shubham"
     },
     "android": {
       "adaptiveIcon": {

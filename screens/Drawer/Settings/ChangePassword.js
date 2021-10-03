@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../../../assets/colors/colors";
 import DefaultTextInput from "../../../components/textinput";
 import DefaultButton from "../../../components/button";
+import baseUrl from "../../../assets/base_url";
 
 const ChangePassword = ({ navigation }) => {
   const [oldPassword, setOldPassword] = useState();
@@ -75,7 +76,7 @@ const ChangePassword = ({ navigation }) => {
           return res;
         });
         console.log(data);
-        fetch("http://192.168.1.124:3000/api/user/Change-password", {
+        fetch(`${baseUrl}/api/user/Change-password`, {
           method: "POST",
           headers: {
             Authorization: "Bearer " + bearer,

@@ -23,6 +23,7 @@ import * as Notifications from "expo-notifications";
 import DefaultTextInput from "../components/textinput";
 import DefaultButton from "../components/button";
 import LoginIllustration from "../assets/images/LoginIllustration.png";
+import baseUrl from "../assets/base_url";
 
 const ValidationSchema = yup.object({
   username: yup
@@ -51,8 +52,9 @@ const Login = ({ navigation }) => {
         console.log("AsyncStorage error: " + error.message);
       }
     };
-    console.log(params);
-    fetch("http://192.168.1.124:3000/api/user/login", {
+    const url = `${baseUrl}/api/user/login`;
+    console.log("url", url);
+    fetch(`${baseUrl}/api/user/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: params,

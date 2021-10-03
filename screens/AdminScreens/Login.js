@@ -20,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DefaultTextInput from "../../components/textinput";
 import DefaultButton from "../../components/button";
 import LoginIllustration from "../../assets/images/LoginIllustration.png";
+import baseUrl from "../../assets/base_url";
 
 const ValidationSchema = yup.object({
   username: yup
@@ -47,7 +48,7 @@ const Login = ({ navigation }) => {
       }
     };
     console.log("params", params);
-    fetch("http://192.168.1.124:3000/api/admin/admin-login", {
+    fetch(`${baseUrl}/api/admin/admin-login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: params,

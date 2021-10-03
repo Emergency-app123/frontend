@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from "react-native";
 import styled from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,6 +14,7 @@ import colors from "../assets/colors/colors";
 import { Camera } from "expo-camera";
 import CameraPreview from "../components/CameraPreview";
 import * as ImageManipulator from "expo-image-manipulator";
+import baseUrl from "../assets/base_url";
 
 const CameraApplication = ({ navigation, navigation: { goBack } }) => {
   const _camera = useRef(null);
@@ -61,7 +63,7 @@ const CameraApplication = ({ navigation, navigation: { goBack } }) => {
       saveOptions
     );
     var file = "data:image/png;base64," + img.base64 !== "" ? img.base64 : "";
-    await fetch("http://192.168.1.124:3000/api/user/detect-face", {
+    await fetch(`${baseUrl}/api/user/detect-face`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -71,8 +73,13 @@ const CameraApplication = ({ navigation, navigation: { goBack } }) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("data", data);
         console.log("check", data.message);
-        navigation.navigate("Camera Successful", data.message);
+        if (data.success == 1) {
+          navigation.navigate("Camera Successful", data.message);
+        } else {
+          Alert.alert(data.message);
+        }
       })
       .catch((err) => {
         console.log("err", err);

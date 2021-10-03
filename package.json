@@ -40,5 +40,19 @@
   "devDependencies": {
     "@babel/core": "^7.9.0"
   },
+    "expo": {
+     "name": "Emergency App",
+     "icon": "./path/to/your/app-icon.png",
+     "version": "1.0.0",
+     "slug": "Emeregency-app-slug",
+     "ios": {
+      "bundleIdentifier": "com.yourcompany.yourappname",
+      "buildNumber": "1.0.0"
+    },
+     "android": {
+       "package": "com.yourcompany.yourappname",
+       "versionCode": 1
+     }
+    },
   "private": true
 }

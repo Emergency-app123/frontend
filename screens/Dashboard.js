@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Card from "../components/card";
 import Constants from "expo-constants";
 import registerDevicePushTokenAsync from "./notification";
+import baseUrl from "../assets/base_url";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -28,7 +29,7 @@ const Dashboard = ({ navigation }) => {
         return res;
       });
       console.log("bearer", bearer);
-      fetch("http://192.168.1.124:3000/api/user/send-notifications", {
+      fetch(`${baseUrl}/api/user/send-notifications`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + bearer,
@@ -66,7 +67,7 @@ const Dashboard = ({ navigation }) => {
       status: 1,
     });
     console.log("hi");
-    fetch("http://192.168.1.124:3000/api/user/setStatusReport", {
+    fetch(`${baseUrl}/api/user/setStatusReport`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + bearer,

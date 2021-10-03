@@ -8,7 +8,7 @@ import styled from "styled-components/native";
 import colors from "../../assets/colors/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { json } from "stream/consumers";
-
+import baseUrl from "../../assets/base_url";
 const UserDetails = ({ navigation }) => {
   const [setData, useNewData] = useState("");
 
@@ -36,7 +36,7 @@ const UserDetails = ({ navigation }) => {
       });
       console.log("Hiiii");
 
-      fetch("http://192.168.1.124:3000/api/admin/getUsers", {
+      fetch(`${baseUrl}/api/admin/getUsers`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + bearer,

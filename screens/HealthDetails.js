@@ -22,6 +22,7 @@ import colors from "../assets/colors/colors";
 import DefaultTextInput from "../components/textinput";
 import DefaultButton from "../components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseUrl from "../assets/base_url";
 
 const ValidationSchema = yup.object({
   contactName: yup.string().required("Please enter contact's name"),
@@ -54,7 +55,7 @@ const HealthDetails = ({ navigation }) => {
       return res;
     });
 
-    fetch("http://192.168.1.124:3000/api/user/emergency-details", {
+    fetch(`${baseUrl}/api/user/emergency-details`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + bearer,
